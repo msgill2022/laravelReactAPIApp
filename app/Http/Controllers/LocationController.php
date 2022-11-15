@@ -6,7 +6,7 @@ use App\Models\User;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\LocationRequest;
-
+use GuzzleHttp\Psr7\Message;
 
 class LocationController extends Controller
 {
@@ -57,9 +57,13 @@ class LocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(LocationRequest $request, User $user, $id)
     {
-        //
+        $user->locations()->update($request->safe()->only(['user_id','latitude', 'longitude']));
+        return response()
+                    ->json([
+                        'message'=>'Location updated successfully'
+                    ]);
     }
 
     /**
