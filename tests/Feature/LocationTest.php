@@ -102,7 +102,7 @@ class LocationTest extends TestCase
 
     public function test_it_has_api_route_that_accept_location_data_for_update_and_updated_in_database()
     {
-        $this->withoutExceptionHandling();
+       
         $user = User::factory()->create();
         $existingLocation = Location::factory()->create([ 'user_id' =>$user->id]);  
        
@@ -114,14 +114,7 @@ class LocationTest extends TestCase
         $response = $this->putJson($this->routePrefix.'/'.$user->id.'/locations/'.$existingLocation->id, $newLocation);
 
         $response->assertOk();
-        // $response->assertJson([  
-		// 	'data' => [  
-		// 		// We keep the ID from the existing Property.
-		// 		'id' => $existingLocation->id,  
-		// 		// But making sure the title changed.
-		// 		'longitude' => $newLocation['longitude']
-		// 	]
-		// ]);  
+       
         $this->assertDatabaseHas('locations', $newLocation);
 
     }
