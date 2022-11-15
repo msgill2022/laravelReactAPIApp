@@ -56,12 +56,14 @@ class LocationTest extends TestCase
 
     public function test_it_has_api_route_that_accept_location_data_and_save_to_database()
     {
+        $this->withoutExceptionHandling();
         $user = User::factory()->create();
         $newLocation = ['latitude'=>fake()->latitude($min=-90, $max=90), 
-                            'longitude'=>fake()->latitude($min=-180, $max=180)];
+                        'longitude'=>fake()->latitude($min=-180, $max=180),
+                        'user_id' =>$user->id
+                        ];
         
-        $newLocation['user_id' ] = $user->id;
-
+        
         $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation);
 
         $response->assertCreated();
@@ -69,16 +71,33 @@ class LocationTest extends TestCase
 
     }
 
-    // public function test_it_reject_the_request_if_required_field_missing()
-    // {
-    //     $user = User::factory()->create();
-    //     $newLocation = Location::factory()
-    //                             ->create(['user_id'=>$user->id]);
+    public function test_it_reject_the_request_if_required_field_missing()
+    {
+        $user = User::factory()->create();
+        $newLocation = ['latitude'=>null, 
+                        'longitude'=>fake()->latitude($min=-180, $max=180),
+                        'user_id' =>$user->id
+                        ];
 
-    //     $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation->toArray());
+        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation);
+        $response->assertStatus(422);
+        
+        $newLocation = ['latitude'=>null, 
+                        'longitude'=>null,
+                        'user_id' =>$user->id
+                        ];
 
-    //     $response->assertSessionHasNoErrors();
+        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation);
+        $response->assertStatus(422);
 
-    // }
+        $newLocation = ['latitude'=>null, 
+                        'longitude'=>null,
+                        'user_id' =>null
+                        ];
+
+        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation);
+        $response->assertStatus(422);
+
+    }
 
 }

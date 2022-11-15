@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\LocationRequest;
+
 
 class LocationController extends Controller
 {
@@ -14,7 +15,7 @@ class LocationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, User $user)
+    public function index(User $user)
     {
         return response()
                     ->json([
@@ -28,23 +29,10 @@ class LocationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(LocationRequest $request, User $user)
     {  
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required'
-                ]);
-        var_dump($validator->fails());     
-        if($validator->fails()) {
-
-            return response()
-                        ->json([
-                            'message'=>"Oops Something went wrong try again",
-                            'error' => $validator->error()
-                        ]);
-        }        
-       $user->locations()->create($request->all());
+       
+       $user->locations()->create($request->safe()->only(['user_id','latitude', 'longitude']));
        return response()
                 ->json([
                     'message'=>"Location saved successfully"
