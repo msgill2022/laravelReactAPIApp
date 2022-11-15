@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use App\Models\User;
 
 class LocationTest extends TestCase
 {
@@ -21,5 +23,13 @@ class LocationTest extends TestCase
         $response = $this->get($this->routePrefix.'/somethingRandom/locations');
 
         $response->assertStatus(404);
+    }
+    public function test_it_has_nested_route_return_200_if_user_present()
+    {
+        $user = User::factory()->create();
+        
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/locations');
+
+        $response->assertOk();
     }
 }
