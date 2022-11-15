@@ -24,6 +24,7 @@ class LocationTest extends TestCase
 
         $response->assertStatus(404);
     }
+
     public function test_it_has_nested_route_return_200_if_user_present()
     {
         $user = User::factory()->create();
@@ -32,4 +33,5 @@ class LocationTest extends TestCase
 
         $response->assertOk();
     }
+    
 }
