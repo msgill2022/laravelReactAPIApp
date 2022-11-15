@@ -12,7 +12,11 @@ use App\Models\User;
 class LocationTest extends TestCase
 {
     use RefreshDatabase;  
+
     private string $routePrefix = '/api/v1/users';  
+
+    
+  
     /**
      * A basic feature test example.
      *
@@ -53,13 +57,28 @@ class LocationTest extends TestCase
     public function test_it_has_api_route_that_accept_location_data_and_save_to_database()
     {
         $user = User::factory()->create();
-        $newLocation = Location::factory()->create(['user_id'=>$user->id]);
+        $newLocation = ['latitude'=>fake()->latitude($min=-90, $max=90), 
+                            'longitude'=>fake()->latitude($min=-180, $max=180)];
+        
+        $newLocation['user_id' ] = $user->id;
 
-        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation->toArray());
+        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation);
 
         $response->assertCreated();
+        $this->assertDatabaseHas('locations', $newLocation);
 
     }
 
+    // public function test_it_reject_the_request_if_required_field_missing()
+    // {
+    //     $user = User::factory()->create();
+    //     $newLocation = Location::factory()
+    //                             ->create(['user_id'=>$user->id]);
+
+    //     $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation->toArray());
+
+    //     $response->assertSessionHasNoErrors();
+
+    // }
 
 }
