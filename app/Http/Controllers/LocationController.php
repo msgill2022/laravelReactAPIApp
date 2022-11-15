@@ -15,7 +15,10 @@ class LocationController extends Controller
      */
     public function index(Request $request, User $user)
     {
-        //
+        return response()
+                    ->json([
+                        'data'=>['something']
+                    ]);
     }
 
     /**

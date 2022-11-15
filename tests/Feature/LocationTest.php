@@ -33,5 +33,18 @@ class LocationTest extends TestCase
 
         $response->assertOk();
     }
-    
+
+    public function test_it_returns_all_locations_of_current_user()
+    {
+        $user = User::factory()->create();
+        
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/locations');
+
+        $response->assertOk();
+        $response->assertJson([
+            'data'=>[
+                'something'
+            ]
+            ]);
+    }
 }
