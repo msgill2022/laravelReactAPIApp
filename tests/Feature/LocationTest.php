@@ -49,4 +49,17 @@ class LocationTest extends TestCase
             ]
             ]);
     }
+
+    public function test_it_has_api_route_that_accept_location_data_and_save_to_database()
+    {
+        $user = User::factory()->create();
+        $newLocation = Location::factory()->create(['user_id'=>$user->id]);
+
+        $response = $this->postJson($this->routePrefix.'/'.$user->id.'/locations', $newLocation->toArray());
+
+        $response->assertCreated();
+
+    }
+
+
 }

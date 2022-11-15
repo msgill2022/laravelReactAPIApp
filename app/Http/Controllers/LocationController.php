@@ -27,9 +27,13 @@ class LocationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request, User $user)
+    {  
+       $user->locations()->create($request->all());
+       return response()
+                ->json([
+                    'message'=>"Location saved successfully"
+                ],201);
     }
 
     /**
