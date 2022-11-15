@@ -119,4 +119,20 @@ class LocationTest extends TestCase
 
     }
 
+    public function test_user_can_delete_location()
+    {
+       
+        $user = User::factory()->create();
+        $existingLocation = Location::factory()->create([ 'user_id' =>$user->id]);  
+       
+        $response = $this->deleteJson($this->routePrefix.'/'.$user->id.'/locations/'.$existingLocation->id);
+
+        $response->assertStatus(204);
+       
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('locations', $existingLocation->toArray());
+
+    }
+
 }
