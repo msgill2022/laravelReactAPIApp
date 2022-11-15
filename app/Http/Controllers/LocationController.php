@@ -17,7 +17,7 @@ class LocationController extends Controller
     {
         return response()
                     ->json([
-                        'data'=>['something']
+                        'data'=>$user->locations
                     ]);
     }
 

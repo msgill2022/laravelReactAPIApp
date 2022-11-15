@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Location;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,13 +38,14 @@ class LocationTest extends TestCase
     public function test_it_returns_all_locations_of_current_user()
     {
         $user = User::factory()->create();
-        
+        $location = Location::factory()->create(['user_id'=>$user->id]);
+
         $response = $this->get($this->routePrefix.'/'.$user->id.'/locations');
 
         $response->assertOk();
         $response->assertJson([
             'data'=>[
-                'something'
+                $location->toArray()
             ]
             ]);
     }
