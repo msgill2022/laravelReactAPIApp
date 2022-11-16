@@ -119,6 +119,37 @@ class LocationTest extends TestCase
 
     }
 
+    public function test_it_return_the_404_if_invalid_location_id()
+    {
+       
+        $user = User::factory()->create();
+        
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/locations/somethingRandom');
+
+        $response->assertStatus(404);
+       
+        $response->assertJson([
+            'message'=> 'Location not found'
+            ]);
+    }
+    public function test_it_has_route_that_show_selected_location()
+    {
+       
+        $user = User::factory()->create();
+        $existingLocations = Location::factory()->count(10)->create([ 'user_id' =>$user->id]);
+        $existingLocations = $existingLocations->toArray();
+        $selectedLocation = $existingLocations[4];
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/locations/'.$selectedLocation['id']);
+
+        $response->assertOk();
+       
+        $response->assertJson([
+            'data'=>
+                $selectedLocation
+        
+            ]);
+    }
+
     public function test_user_can_delete_location()
     {
        
@@ -152,7 +183,6 @@ class LocationTest extends TestCase
         $existingLocations = Location::factory()->count(10)->create([ 'user_id' =>$user->id]);
         $existingLocations = $existingLocations->toArray();
         $latestLocation = end($existingLocations);
-        var_dump($latestLocation);
         $response = $this->get($this->routePrefix.'/'.$user->id.'/current');
 
         $this->assertDatabaseCount('locations', 10);

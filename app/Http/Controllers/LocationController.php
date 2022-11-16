@@ -59,9 +59,19 @@ class LocationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user,$id)
     {
-        //
+        $data= $user->locations()->find($id);
+        if(is_null($data)){
+            return response()
+            ->json([
+                'message'=>'Location not found'
+            ], 404);
+        }
+        return response()
+                ->json([
+                    'data'=> $data
+                ]);
     }
 
     /**
