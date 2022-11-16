@@ -146,4 +146,23 @@ class LocationTest extends TestCase
 
     }
 
+    public function test_user_can_get_his_current_location() 
+    {
+        $user = User::factory()->create();
+        $existingLocations = Location::factory()->count(10)->create([ 'user_id' =>$user->id]);
+        $existingLocations = $existingLocations->toArray();
+        $latestLocation = end($existingLocations);
+        var_dump($latestLocation);
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/current');
+
+        $this->assertDatabaseCount('locations', 10);
+        $response->assertJson([
+            'data'=>
+                $latestLocation
+        
+            ]);
+
+    }
+
+
 }

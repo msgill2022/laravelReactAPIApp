@@ -17,9 +17,10 @@ class LocationController extends Controller
      */
     public function current(User $user)
     {
+
         return response()
                     ->json([
-                        'data'=>'some random data'
+                        'data'=>$user->latestLocation
                     ]);
     }
 

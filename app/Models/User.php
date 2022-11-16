@@ -51,4 +51,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Location::class);
     }
+
+      /**
+     * Get the user's most recent location.
+     */
+
+    public function latestLocation()
+    {
+        return $this->hasOne(Location::class)->latestOfMany();
+    }
 }
