@@ -11,6 +11,19 @@ use GuzzleHttp\Psr7\Message;
 class LocationController extends Controller
 {
     /**
+     * Display a latest resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function current(User $user)
+    {
+        return response()
+                    ->json([
+                        'data'=>'some random data'
+                    ]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

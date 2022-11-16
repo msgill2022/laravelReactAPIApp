@@ -21,4 +21,6 @@ Route::prefix('v1')
             ->scopeBindings()
             ->group(function() {
                 Route::resource('users.locations', LocationController::class);
+                Route::get('/users/{user}/current', [LocationController::class, 'current']);
+                
             });

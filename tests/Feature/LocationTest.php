@@ -135,4 +135,15 @@ class LocationTest extends TestCase
 
     }
 
+    public function test_user_have_current_route_where_he_can_get_his_current_location() 
+    {
+        $user = User::factory()->create();
+        
+        $response = $this->get($this->routePrefix.'/'.$user->id.'/current');
+
+        $response->assertOk();
+       
+
+    }
+
 }
