@@ -6,16 +6,15 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/sass/app.scss',
-                'resources/js/app.js',
+                'resources/css/app.css',
+                'resources/js/app.jsx',
             ],
             refresh: true,
         }),
         react(),
     ],
-      server: {
-        open: true,
-        origin: 'http://127.0.0.1:8080/'
-      },
+    server: {
+      // open: true,
+      origin: 'http://127.0.0.1:8080/'
+    },
 });
-
