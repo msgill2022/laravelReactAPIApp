@@ -1,6 +1,6 @@
 import React from 'react';
 import GetLocationForm from './components/Forms/GetLocationForm'
-
+import PostLocationForm from './components/Forms/PostLocationForm'
 function LocationPage () {
     return(
       <div className='container mx-auto'>
@@ -53,7 +53,7 @@ function LocationPage () {
 
                  {/* Form to save location Section start*/}
                  <div className=''>
-                  i am the form
+                  <PostLocationForm />
                 </div>
                 {/* Form to the get latest save location Section end*/}
 

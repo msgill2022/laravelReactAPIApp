@@ -1,10 +1,11 @@
 import React from 'react'
 
 export default function Button(props) {
-    const { type ='default',
-    className ='', 
-    processing,
-    children} = props;
+    const { 
+        type ='default',
+        className ='', 
+        processing,
+        children} = props;
 
   return (
     <button 
