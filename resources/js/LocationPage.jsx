@@ -1,5 +1,5 @@
 import React from 'react';
-
+import GetLocationForm from './components/Forms/GetLocationForm'
 
 function LocationPage () {
     return(
@@ -33,7 +33,7 @@ function LocationPage () {
 
                  {/* Form to get latest saved location Section start*/}
                  <div className=''>
-                  i am the form
+                 <GetLocationForm />
                 </div>
                 {/* Form to the get latest saved location Section end*/}
 
