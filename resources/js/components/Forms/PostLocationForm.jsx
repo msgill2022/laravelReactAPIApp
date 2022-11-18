@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "../misc/Button";
-import InputField from "../InputField";
+import axios from "axios";
+
 import Greeting from "../Greeting";
 import { apiPrefix } from "../../config";
 import {
@@ -8,23 +9,30 @@ import {
     validLatitudePattern,
     validLongitudePattern,
 } from "../../utils";
-import axios from "axios";
+import Alert from "../Alert";
 
 function PostLocationForm(props) {
     const { isLoggedIn, user } = props;
-    const validLatitude = (value) =>
-        patternValidator(validLatitudePattern, value);
-    const validLongitude = (value) =>
-        patternValidator(validLongitudePattern, value);
 
     const [currentInputLocation, setCurrentInputLocation] = useState({
         latitude: "38.8951",
         longitude: "-77.0364",
     });
+    const [message, setMessage] = React.useState(() => ({
+        latitude: { message: "" },
+        longitude: { message: "" },
+        message: "",
+        type: "",
+    }));
+    // const [success, setSuccess] = useState(() => {});
 
-    const handleSubmitButton = (event) => {
-        event.preventDefault();
+    const validLatitude = (value) =>
+        patternValidator(validLatitudePattern, value);
 
+    const validLongitude = (value) =>
+        patternValidator(validLongitudePattern, value);
+
+    const handleSubmitButton = () => {
         if (
             validLatitude(currentInputLocation.latitude) &&
             validLongitude(currentInputLocation.longitude)
@@ -37,20 +45,67 @@ function PostLocationForm(props) {
 
             axios
                 .post(`${apiPrefix}/users/${user.id}/locations`, data)
-                .then((res) => console.log("data successfully saved on server"))
+                .then((res) =>
+                    setMessage((prev) => ({
+                        ...prev,
+                        type: "success",
+                        message:
+                            "Your Location is successfully saved on our server.",
+                    }))
+                )
                 .then((err) => console.log(err));
         } else {
-            console.log("Please fix your coordinates.");
+            handleErr();
         }
+    };
+
+    const handleErr = () => {
+        setMessage((prev) => ({
+            ...prev,
+            type: "fail",
+            message: "Something went wrong please try again.",
+        }));
     };
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
-
         setCurrentInputLocation((prevState) => ({
             ...prevState,
             [name]: value,
         }));
+        switch (name) {
+            case "latitude":
+                let newLatitudeData = {
+                    latitude: { message: "Please enter valid latitude." },
+                };
+                validLatitude(value) &&
+                    setMessage((prev) => ({
+                        ...prev,
+                        type: "fail",
+                        ...newLatitudeData,
+                    }));
+
+                break;
+            case "longitude":
+                let newLongitudeData = {
+                    latitude: { message: "Please enter valid longitude." },
+                };
+                validLatitude(value) &&
+                    setMessage((prev) => ({
+                        ...prev,
+                        type: "fail",
+                        ...newLongitudeData,
+                    }));
+
+                break;
+
+            default:
+                setCurrentInputLocation((prevState) => ({
+                    ...prevState,
+                    [name]: value,
+                }));
+                break;
+        }
     };
 
     if (isLoggedIn) {
@@ -67,34 +122,61 @@ function PostLocationForm(props) {
                     For example, Washington DC has a latitude 38.8951 and
                     longitude -77.0364.{" "}
                 </p>
-                <form className="w-full max-w-sm">
-                    <InputField
+                <div className="mb-4">
+                    <input
                         id="latitude"
-                        label="Latitude"
-                        type="float"
+                        type="text"
                         name="latitude"
                         value={currentInputLocation.latitude}
-                        onChange={(e) => handleOnChange(e)}
-                        required
+                        placeholder="latitude 38.8951"
+                        onChange={handleOnChange}
+                        required="required"
+                        className="shadow appearance-none border border-red-500 rounded py-2 px-3 text-gray-700 mb-3
+                                 leading-tight focus:outline-none focus:shadow-outline"
                     />
+                    {message.latitude && (
+                        <Alert
+                            type={message.type}
+                            message={message.latitude.message}
+                        />
+                    )}
+                    {message.longitude && (
+                        <Alert
+                            type={message.type}
+                            message={message.longitude.message}
+                        />
+                    )}
 
-                    <InputField
-                        id="Longitude"
-                        label="Longitude"
-                        type="float"
-                        name="longitude"
-                        value={currentInputLocation.longitude}
-                        onChange={(e) => handleOnChange(e)}
-                        required
-                    />
-
-                    <Button
-                        type="submit"
-                        onClick={(e) => handleSubmitButton(e)}
-                    >
-                        Save Location
-                    </Button>
-                </form>
+                    <div className="mb-4">
+                        <input
+                            id="Longitude"
+                            label="Longitude"
+                            type="text"
+                            name="longitude"
+                            value={currentInputLocation.longitude}
+                            onChange={handleOnChange}
+                            required="required"
+                            className="shadow appearance-none border border-red-500 rounded py-2 px-3 text-gray-700 mb-3
+                                 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        {message.type && (
+                            <Alert
+                                type={message.type}
+                                message={message.message}
+                            />
+                        )}
+                    </div>
+                    <div className="mb-4">
+                        <Button
+                            // processing={isLoggedIn}
+                            onClick={() => handleSubmitButton()}
+                        >
+                            Submit
+                        </Button>
+                    </div>
+                </div>
             </div>
         );
     }

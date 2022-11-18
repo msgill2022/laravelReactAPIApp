@@ -1,12 +1,17 @@
 import React from "react";
 
 export default function Alert(props) {
-    const { err, message } = props;
+    const { type, message } = props;
+    if (type === "success") {
+        return (
+            <div>
+                <div className={`text-green-600`}>{message}</div>
+            </div>
+        );
+    }
     return (
         <div>
-            <div className={`text-${err ? "red" : "green"}-600`}>
-                {err && message}
-            </div>
+            <div className={`text-red-600`}>{message}</div>
         </div>
     );
 }

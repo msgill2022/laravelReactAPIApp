@@ -15,36 +15,23 @@ function LocationPage() {
     const [userInput, setUserInput] = React.useState(1);
     const [user, setUser] = React.useState();
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [message, setMessage] = React.useState(() => "");
-    const [err, setErr] = React.useState(() => true);
-
-    // const userInputRef = React.useRef(1);
-
-    // React.useEffect(() => {
-    //     const userElement = userInputRef.current;
-
-    //     const handleEvent = (event) => {
-    //         if (event.key === "Enter") {
-    //             event.preventDefault();
-    //             getCurrentUser(userInput);
-    //         }
-    //     };
-    //     userElement.addEventListener("keydown", handleEvent);
-    //     return () => userElement.removeEventListener("keydown", handleEvent);
-    // }, []);
+    const [message, setMessage] = React.useState(() => ({
+        type: "",
+        message: "",
+    }));
 
     const handleSubmitButton = () => {
         if (validUser(userInput)) {
             fetchCurrentUser(userInput);
         } else {
-            handleError();
+            handleErr();
         }
     };
     const fetchCurrentUser = (userInput) => {
         axios
             .get(`${apiPrefix}/users/${userInput}`)
             .then((res) => handleSuccess(res.data.data))
-            .catch((err) => handleError(err));
+            .catch((err) => handleErr(err));
     };
 
     const handleSuccess = ({ id, name, email }) => {
@@ -56,23 +43,40 @@ function LocationPage() {
         }));
 
         setIsLoggedIn(true);
-
-        setMessage("you successfully logged in");
+        setMessage((prev) => ({
+            ...prev,
+            type: "success",
+            message:
+                "you successfully logged in,Refresh the page for other user.",
+        }));
     };
 
-    const handleError = () => {
+    const handleErr = () => {
         setErr((prev) => (prev = true));
         setIsLoggedIn(false);
-        setMessage((prev) => (prev = "Something went wrong try again"));
+        setMessage((prev) => ({
+            ...prev,
+            type: "error",
+            message: "Something went wrong try again.",
+        }));
     };
 
     const handleOnChange = (event) => {
         setUserInput((prev) => (prev = event.target.value));
         if (!validUser(event.target.value)) {
-            setMessage((prev) => (prev = "Please enter the valid User id"));
+            setMessage((prev) => ({
+                ...prev,
+                type: "error",
+                message: "Please enter the valid User id",
+            }));
+            // setMessage((prev) => (prev = "Please enter the valid User id"));
         }
         if (validUser(event.target.value)) {
-            setMessage((prev) => (prev = ""));
+            setMessage((prev) => ({
+                ...prev,
+                type: "",
+                message: "",
+            }));
         }
     };
     return (
@@ -96,11 +100,13 @@ function LocationPage() {
                         className="shadow appearance-none border border-red-500 rounded py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                     />
                     <div className="mb-4">
-                        <Alert err={err} message={message} />
-                        {/* <div className="text-red-600">{err && message}</div> */}
+                        <Alert type={message.type} message={message.message} />
                     </div>
                     <div className="mb-4">
-                        <Button onClick={() => handleSubmitButton()}>
+                        <Button
+                            processing={isLoggedIn}
+                            onClick={() => handleSubmitButton()}
+                        >
                             Submit
                         </Button>
                     </div>
