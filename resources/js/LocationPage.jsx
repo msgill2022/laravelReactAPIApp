@@ -2,49 +2,49 @@ import React from "react";
 
 import PostLocationForm from "./components/Forms/PostLocationForm";
 
-import { patternValidator, validDigitPattern } from "./utils";
+import { validUser } from "./utils";
 import Input from "./components/misc/Input";
 import Label from "./components/misc/Label";
 import Button from "./components/misc/Button";
-
+import Alert from "./components/Alert";
 import { apiPrefix } from "./config";
 import GetCurrentLocation from "./components/GetCurrentLocation";
 import PageHeading from "./components/PageHeading";
 
 function LocationPage() {
-    const [userInput, setUserInput] = React.useState(() => 1);
+    const [userInput, setUserInput] = React.useState(1);
     const [user, setUser] = React.useState();
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-    const [err, setErr] = React.useState(() => ({
-        status: false,
-        type: "",
-        message: "",
-    }));
+    const [message, setMessage] = React.useState(() => "");
+    const [err, setErr] = React.useState(() => true);
 
-    const userInputRef = React.useRef(1);
+    // const userInputRef = React.useRef(1);
 
-    const validUser = (value) => patternValidator(validDigitPattern, value);
+    // React.useEffect(() => {
+    //     const userElement = userInputRef.current;
 
-    React.useEffect(() => {
-        const userElement = userInputRef.current;
+    //     const handleEvent = (event) => {
+    //         if (event.key === "Enter") {
+    //             event.preventDefault();
+    //             getCurrentUser(userInput);
+    //         }
+    //     };
+    //     userElement.addEventListener("keydown", handleEvent);
+    //     return () => userElement.removeEventListener("keydown", handleEvent);
+    // }, []);
 
-        const handleEvent = (event) => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                getCurrentUser(userInput);
-            }
-        };
-        userElement.addEventListener("keydown", handleEvent);
-        return () => userElement.removeEventListener("keydown", handleEvent);
-    }, []);
-
-    const getCurrentUser = (userInput) => {
+    const handleSubmitButton = () => {
         if (validUser(userInput)) {
-            axios
-                .get(`${apiPrefix}/users/${userInput}`)
-                .then((res) => handleSuccess(res.data.data))
-                .catch((err) => handleError(err));
+            fetchCurrentUser(userInput);
+        } else {
+            handleError();
         }
+    };
+    const fetchCurrentUser = (userInput) => {
+        axios
+            .get(`${apiPrefix}/users/${userInput}`)
+            .then((res) => handleSuccess(res.data.data))
+            .catch((err) => handleError(err));
     };
 
     const handleSuccess = ({ id, name, email }) => {
@@ -56,22 +56,25 @@ function LocationPage() {
         }));
 
         setIsLoggedIn(true);
+
+        setMessage("you successfully logged in");
     };
 
-    const handleOnChange = (e) => {
-        setUserInput(e.target.value);
-        if (!validUser) {
-            setErr((prev) => ({ ...prev, status: true }));
-        }
-        setErr((prev) => ({ ...prev, status: false }));
-    };
-
-    const handleError = (err) => {
+    const handleError = () => {
+        setErr((prev) => (prev = true));
         setIsLoggedIn(false);
-
-        console.log(err);
+        setMessage((prev) => (prev = "Something went wrong try again"));
     };
 
+    const handleOnChange = (event) => {
+        setUserInput((prev) => (prev = event.target.value));
+        if (!validUser(event.target.value)) {
+            setMessage((prev) => (prev = "Please enter the valid User id"));
+        }
+        if (validUser(event.target.value)) {
+            setMessage((prev) => (prev = ""));
+        }
+    };
     return (
         <div className="container mx-auto">
             <div className="mt-16">
@@ -80,32 +83,27 @@ function LocationPage() {
                     description="we provide opportunity to save the location data on our server."
                 />
 
-                <div className="md:pl-xl max-w-xs">
-                    <Label
-                        for="user_id"
-                        className="w-full text-gray-700 text-sm font-bold mb-2"
-                    >
-                        Enter Your User_Id
-                    </Label>
-                    <Input
+                <div className="grid place-items-center">
+                    <input
                         id="user_id"
                         name="id"
-                        type="number"
+                        type="text"
+                        placeholder="Your User id"
                         value={userInput}
-                        innerref={userInputRef}
-                        onChange={(e) => {
-                            handleOnChange(e);
-                        }}
-                        required
+                        // innerref={userInputRef}
+                        onChange={handleOnChange}
+                        required="required"
+                        className="shadow appearance-none border border-red-500 rounded py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                     />
-
-                    <Button
-                        type="submit"
-                        name="submit"
-                        onClick={() => getCurrentUser(userInput)}
-                    >
-                        Submit
-                    </Button>
+                    <div className="mb-4">
+                        <Alert err={err} message={message} />
+                        {/* <div className="text-red-600">{err && message}</div> */}
+                    </div>
+                    <div className="mb-4">
+                        <Button onClick={() => handleSubmitButton()}>
+                            Submit
+                        </Button>
+                    </div>
                 </div>
             </div>
 
