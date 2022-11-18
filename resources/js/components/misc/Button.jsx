@@ -5,7 +5,9 @@ export default function Button(props) {
         type ='default',
         className ='', 
         processing,
-        children} = props;
+        name,
+        children
+      } = props;
 
   return (
     <button 
@@ -16,6 +18,8 @@ export default function Button(props) {
             + className
         }
         disabled={processing}
+        name={name}
+        {...props}
         >
         {children}
     </button>

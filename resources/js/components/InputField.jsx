@@ -8,22 +8,19 @@ export default function InputField(props) {
     label='',
     type='text',
     value='',
+    name,
+    onChange
     } = props;
 
   return (
-    <div class="md:flex md:items-center mb-6">
-    <div class="md:w-1/3">
-      <Label>
-
-      </Label>
-      <label  for={id}>
-        {label}
-      </label>
+    <div className="md:flex md:items-center mb-6">
+      <div className="md:w-1/3">
+        <Label for={id}> {label} </Label>
+      </div>
+      <div className="md:w-2/3">
+        <Input id={id} type={type} value={value} onChange={onChange} name={name} {...props}/>
     </div>
-    <div class="md:w-2/3">
-      <Input id={id} type={type} value={value} />
-      
-    </div>
+    
   </div>
   )
 }

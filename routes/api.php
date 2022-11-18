@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,6 @@ Route::prefix('v1')
             ->group(function() {
                 Route::resource('users.locations', LocationController::class);
                 Route::get('/users/{user}/current', [LocationController::class, 'current']);
+                Route::get('/users/{id}', [UserController::class, 'show']);
                 
             });
