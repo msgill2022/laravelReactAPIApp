@@ -52,8 +52,7 @@ function LocationPage() {
     };
 
     const handleErr = () => {
-        setErr((prev) => (prev = true));
-        setIsLoggedIn(false);
+        setIsLoggedIn((prev) => (prev = false));
         setMessage((prev) => ({
             ...prev,
             type: "error",
