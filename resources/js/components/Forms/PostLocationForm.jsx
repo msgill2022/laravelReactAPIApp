@@ -5,9 +5,9 @@ import axios from "axios";
 import Greeting from "../Greeting";
 import { apiPrefix } from "../../config";
 import {
-    patternValidator,
-    validLatitudePattern,
-    validLongitudePattern,
+    validLatitude,
+    validLongitude,
+    handleGeoCoordinateValidation,
 } from "../../utils";
 import Alert from "../Alert";
 
@@ -19,24 +19,21 @@ function PostLocationForm(props) {
         longitude: "-77.0364",
     });
     const [message, setMessage] = React.useState(() => ({
-        latitude: { message: "" },
-        longitude: { message: "" },
+        latitude: { type: "", message: "" },
+        longitude: { type: "", message: "" },
         message: "",
         type: "",
     }));
-    // const [success, setSuccess] = useState(() => {});
 
-    const validLatitude = (value) =>
-        patternValidator(validLatitudePattern, value);
-
-    const validLongitude = (value) =>
-        patternValidator(validLongitudePattern, value);
-
-    const handleSubmitButton = () => {
-        if (
+    const geoCoordinatesValidate = () => {
+        return (
             validLatitude(currentInputLocation.latitude) &&
             validLongitude(currentInputLocation.longitude)
-        ) {
+        );
+    };
+
+    const handleSubmitButton = () => {
+        if (geoCoordinatesValidate) {
             let data = {
                 latitude: parseFloat(currentInputLocation.latitude),
                 longitude: parseFloat(currentInputLocation.longitude),
@@ -73,39 +70,11 @@ function PostLocationForm(props) {
             ...prevState,
             [name]: value,
         }));
-        switch (name) {
-            case "latitude":
-                let newLatitudeData = {
-                    latitude: { message: "Please enter valid latitude." },
-                };
-                validLatitude(value) &&
-                    setMessage((prev) => ({
-                        ...prev,
-                        type: "fail",
-                        ...newLatitudeData,
-                    }));
-
-                break;
-            case "longitude":
-                let newLongitudeData = {
-                    latitude: { message: "Please enter valid longitude." },
-                };
-                validLatitude(value) &&
-                    setMessage((prev) => ({
-                        ...prev,
-                        type: "fail",
-                        ...newLongitudeData,
-                    }));
-
-                break;
-
-            default:
-                setCurrentInputLocation((prevState) => ({
-                    ...prevState,
-                    [name]: value,
-                }));
-                break;
-        }
+        const newData = handleGeoCoordinateValidation(name, value);
+        setMessage((prev) => ({
+            ...prev,
+            [name]: newData,
+        }));
     };
 
     if (isLoggedIn) {
@@ -140,12 +109,6 @@ function PostLocationForm(props) {
                             message={message.latitude.message}
                         />
                     )}
-                    {message.longitude && (
-                        <Alert
-                            type={message.type}
-                            message={message.longitude.message}
-                        />
-                    )}
 
                     <div className="mb-4">
                         <input
@@ -160,6 +123,13 @@ function PostLocationForm(props) {
                                  leading-tight focus:outline-none focus:shadow-outline"
                         />
                     </div>
+                    {message.longitude && (
+                        <Alert
+                            type={message.type}
+                            message={message.longitude.message}
+                        />
+                    )}
+
                     <div className="mb-4">
                         {message.type && (
                             <Alert
@@ -169,11 +139,8 @@ function PostLocationForm(props) {
                         )}
                     </div>
                     <div className="mb-4">
-                        <Button
-                            // processing={isLoggedIn}
-                            onClick={() => handleSubmitButton()}
-                        >
-                            Submit
+                        <Button onClick={() => handleSubmitButton()}>
+                            Submit Location
                         </Button>
                     </div>
                 </div>

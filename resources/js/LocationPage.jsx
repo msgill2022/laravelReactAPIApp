@@ -3,8 +3,6 @@ import React from "react";
 import PostLocationForm from "./components/Forms/PostLocationForm";
 
 import { validUser } from "./utils";
-import Input from "./components/misc/Input";
-import Label from "./components/misc/Label";
 import Button from "./components/misc/Button";
 import Alert from "./components/Alert";
 import { apiPrefix } from "./config";
@@ -68,7 +66,6 @@ function LocationPage() {
                 type: "error",
                 message: "Please enter the valid User id",
             }));
-            // setMessage((prev) => (prev = "Please enter the valid User id"));
         }
         if (validUser(event.target.value)) {
             setMessage((prev) => ({
@@ -103,7 +100,7 @@ function LocationPage() {
                     </div>
                     <div className="mb-4">
                         <Button
-                            processing={isLoggedIn}
+                            disabled={isLoggedIn}
                             onClick={() => handleSubmitButton()}
                         >
                             Submit

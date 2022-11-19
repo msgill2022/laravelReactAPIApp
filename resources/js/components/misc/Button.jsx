@@ -5,6 +5,7 @@ export default function Button(props) {
         type = "default",
         className = "",
         processing,
+        disabled,
         name,
         children,
     } = props;
@@ -14,9 +15,9 @@ export default function Button(props) {
             type={type}
             className={
                 `bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
-            ${processing && "opacity-25"}` + className
+            ${disabled && "opacity-25"}` + className
             }
-            disabled={processing}
+            disabled={disabled}
             name={name}
             {...props}
         >
