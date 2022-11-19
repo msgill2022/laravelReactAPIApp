@@ -33,7 +33,8 @@ function PostLocationForm(props) {
     };
 
     const handleSubmitButton = () => {
-        if (geoCoordinatesValidate) {
+        if (geoCoordinatesValidate()) {
+            console.log("I am called");
             let data = {
                 latitude: parseFloat(currentInputLocation.latitude),
                 longitude: parseFloat(currentInputLocation.longitude),
@@ -52,7 +53,11 @@ function PostLocationForm(props) {
                 )
                 .then((err) => console.log(err));
         } else {
-            handleErr();
+            setMessage((prev) => ({
+                ...prev,
+                type: "fail",
+                message: "Please enter the valid lat. and long. coordinates.",
+            }));
         }
     };
 

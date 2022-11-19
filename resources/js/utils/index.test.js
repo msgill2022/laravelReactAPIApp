@@ -6,28 +6,28 @@ import {
 
 // valid latitude 49.528526 and long -96.691093.
 
-// describe("tests patternValidator function", () => {
-//     test("should return false for invalid latitude", () => {
-//         expect(validLatitude("invalid")).toBe(false);
-//     });
-//     test("should return true for valid latitude", () => {
-//         expect(validLatitude("49.528526")).toBe(true);
-//     });
+describe("tests patternValidator function", () => {
+    test("should return false for invalid latitude", () => {
+        expect(validLatitude("invalid")).toBe(false);
+    });
+    test("should return true for valid latitude", () => {
+        expect(validLatitude("49.528526")).toBe(true);
+    });
 
-//     test("should return false for invalid latitude", () => {
-//         expect(validLatitude("-96.691093")).toBe(false);
-//     });
+    test("should return false for invalid latitude", () => {
+        expect(validLatitude("-96.691093")).toBe(false);
+    });
 
-//     test("should return false for invalid latitude", () => {
-//         expect(validLongitude("invalid")).toBe(false);
-//     });
-//     test("should return true for valid latitude", () => {
-//         expect(validLongitude("-96.691093")).toBe(true);
-//     });
-//     test("should return true for valid latitude", () => {
-//         expect(validLongitude("-186.528526")).toBe(false);
-//     });
-// });
+    test("should return false for invalid latitude", () => {
+        expect(validLongitude("invalid")).toBe(false);
+    });
+    test("should return true for valid latitude", () => {
+        expect(validLongitude("-96.691093")).toBe(true);
+    });
+    test("should return true for valid latitude", () => {
+        expect(validLongitude("-186.528526")).toBe(false);
+    });
+});
 
 describe("test handleGoeCoordinationValidation function", () => {
     test("should throw error if it not latitude and longitude", () => {
